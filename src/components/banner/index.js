@@ -1,4 +1,6 @@
-import React from "react";
+import axios from "../../Api/axios";
+import {requests} from "../../Api/Requests"
+import React, { useEffect, useState } from "react";
 import "./style.css";
 
 const Classnames = {
@@ -15,11 +17,16 @@ export const Banner = () => {
   const [movie, setMovie] = useState([]);
 
   useEffect(() => {
-    effect;
-    return () => {
-      cleanup;
-    };
-  }, [input]);
+    async function fetchData() {
+      const request = await axios.get(requests.fetchNetflixOriginals)
+      setMovie(
+        request.data.results[
+          Math.floor(Math.random() * request.data.results.length - 1)
+        ]
+      )
+    }
+    fetchData()
+  }, []);
 
   const truncate = (string, n) => {
     return string?.length > n ? string.substr(0, n - 1) + "..." : string;
@@ -28,19 +35,19 @@ export const Banner = () => {
     <header
       className={Classnames.Banner}
       style={{
-        backgroundImage: `url('https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8bmV0ZmxpeHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80')`,
+        backgroundImage: `url('https://image.tmdb.org/t/p/original/${movie?.backdrop_path}')`,
         backgroundSize: "cover",
         backgroundPosition: "center center",
       }}
     >
       <div className={Classnames.Banner_Contents}>
-        <h1 className={Classnames.Banner_Title}>NETFLIX MOVIEWS</h1>
+        <h1 className={Classnames.Banner_Title}>{movie?.name || movie?.title || movie?.original_name}</h1>
         <div className={Classnames.Banner_Buttons}>
           <button className={Classnames.Banner_Button}>Play</button>
           <button className={Classnames.Banner_Button}>My List</button>
         </div>
         <h1 className={Classnames.Banner_Description}>
-          {truncate(`This is a descipttrereerer`, 100)}
+          {truncate( movie?.overview, 150)}
         </h1>
       </div>
       <div className={Classnames.Banner_FadeBottom} />
